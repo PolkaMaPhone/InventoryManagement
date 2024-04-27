@@ -1,0 +1,59 @@
+import React, { useState, useEffect } from 'react';
+import { Button, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
+import AddItemForm from '../forms/AddItemForm';
+import AddTubForm from '../forms/AddTubForm';
+import AddShelfForm from '../forms/AddShelfForm';
+
+const HomePage: React.FC = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [drawerContent, setDrawerContent] = useState<string | null>(null);
+
+    const handleOpen = (content: string) => {
+        setDrawerContent(content);
+        onOpen();
+    };
+
+    const [toastMessage] = useState<string | null>(null);
+
+    const getDrawerContent = () => {
+        switch (drawerContent) {
+            case 'item':
+                return <AddItemForm />;
+            case 'tub':
+                return <AddTubForm />;
+            case 'shelf':
+                return <AddShelfForm />;
+            default:
+                return <div>No content selected</div>;
+        }
+    };
+
+    useEffect(() => {
+        if (toastMessage) {
+            onClose();
+        }
+    }, [toastMessage]);
+
+    return (
+        <div>
+            <Button onClick={() => handleOpen('item')}>Add Item</Button>
+            <Button onClick={() => handleOpen('tub')}>Add Tub</Button>
+            <Button onClick={() => handleOpen('shelf')}>Add Shelf</Button>
+
+            <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+                <DrawerOverlay />
+                <DrawerContent>
+
+                    <DrawerCloseButton />
+                    <DrawerHeader>
+                        Create New {drawerContent && drawerContent.charAt(0).toUpperCase() + drawerContent.slice(1)}
+                    </DrawerHeader>
+                    <DrawerBody>
+                        {getDrawerContent()}
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
+        </div>
+    );
+}
+export default HomePage;
