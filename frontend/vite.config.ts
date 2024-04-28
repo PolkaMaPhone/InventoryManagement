@@ -1,29 +1,23 @@
-import {defineConfig, loadEnv} from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
-const env = loadEnv(
-    'all',
-    process.cwd()
-);
-const frontend_port = env.VITE_FRONTEND_PORT;
-const backend_port = env.BACKEND_PORT;
+export default ({ mode }: { mode: string }) => {
+    // Construct the path to the parent directory
+    const parentDir = path.resolve(process.cwd(), '../');
+    
+    // Load environment variables from the parent directory
+    const env = loadEnv(mode, parentDir, 'VITE_');
+    console.debug('env', env);
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      // Setup aliases
-    },
-
-  },
-  server: {
-    proxy: {
-      '/api': ('http://localhost:' + backend_port)
-    },
-    port: parseInt(frontend_port || '3000'),
-  },
-  build: {
-    // Adjust build options
-  }
-});
+    return defineConfig({
+        plugins: [react()],
+        server: {
+            proxy: {
+                '/api': `http://localhost:${env.VITE_BACKEND_PORT}`,
+            },
+            port: parseInt(env.VITE_FRONTEND_PORT || '3000'),
+        },
+        // Additional configurations...
+    });
+};
