@@ -13,7 +13,7 @@ const shelfRoutes = require('./routes/shelfRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3001;  // Define the default port or use environment variable
+const PORT = process.env.BACKEND_PORT || 3001;  // Define the default port or use environment variable
 
 // Middleware
 app.use(cors());
