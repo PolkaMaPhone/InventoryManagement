@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
         if (toastMessage) {
             onClose();
         }
-    }, [toastMessage]);
+    }, [toastMessage, onClose]);
 
     return (
         <div>

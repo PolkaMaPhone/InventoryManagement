@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Item } from '../types/itemTypes';
 import {
   Table,
   Thead,
@@ -13,24 +14,22 @@ import {
   Box
 } from '@chakra-ui/react';
 
-import { Item } from '../types/itemTypes';
+
 
 const ItemList: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const toast = useToast();
-  
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
-  const fetchItems = async () => {
-    try {
+  useEffect(() => {
+    
+    const fetchItems = async () => {
       const response = await fetch('/api/items/withCategory');
       if (!response.ok) {
         throw new Error('Failed to fetch items');
       }
       const data = await response.json();
       setItems(data);
+      console.log("rendering toast");
       toast.promise(
         Promise.resolve(),
         {
@@ -39,25 +38,10 @@ const ItemList: React.FC = () => {
           loading: { title: 'Fetching items', description: 'Please wait...' },
         }
       );
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: 'Error fetching items',
-          description: error.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    }
-  };
-
-  // if the category_id is null, set the category name to "none"
-  items.forEach(item => {
-    if (item.category_id === null) {
-      item.category = { category_id: 0, name: 'None', description: '' };
-    }
-  });
+      console.log("done rendering toast");
+    };
+    fetchItems();
+  }, [toast]);
 
   const deleteItem = async (item_id: number) => {
     try {
