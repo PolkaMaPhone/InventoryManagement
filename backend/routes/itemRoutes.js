@@ -23,4 +23,7 @@ router.delete('/:id', itemController.deleteItem);
 // Move item to a new location
 router.put('/:id/move', itemController.moveItem);
 
+// get a single item with it's category by ID
+router.get('/:id/withCategory', itemController.getItemWithCategory);
+
 module.exports = router;

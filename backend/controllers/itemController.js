@@ -16,11 +16,62 @@ exports.getItemsWithCategory = async (req, res) => {
         const items = await Item.findAll({
             include: 'category'
         });
-        res.json(items);
+        //if any items in the list are not categorized, add some defaults
+        const updatedItems = items.map(item => {
+            if (item.category_id === null || item.group_id === null || item.location_id === null) {
+                const updatedItem = {
+                    ...item.toJSON(),
+                    category: item.category_id === null ? { category_id: 0, name: "Uncategorized", description: "This item has no category defined." } : item.category,
+                };
+                if (updatedItem.category_id === null) {
+                    updatedItem.category_id = 0;
+                }
+                if (updatedItem.group_id === null) {
+                    updatedItem.group_id = 0;
+                }
+                if (updatedItem.location_id === null) {
+                    updatedItem.location_id = 0;
+                }
+                return updatedItem;
+            }
+        });
+        res.json(updatedItems);
     } catch (error) {
         res.status(500).json({ message: 'Error getting items', error: error.message });
     }
 };
+// Get a single item with it's category by ID
+exports.getItemWithCategory = async (req, res) => {
+    try {
+        const item = await Item.findByPk(req.params.id, {
+            include: 'category'
+        });
+        if (item) {
+            if (item.category_id === null) {
+                const updatedItem = {
+                    ...item.toJSON(),
+                    category: { category_id: 0, name: "Uncategorized", description: "This item has no category defined." },
+                };
+                // if group_id is null then update the group_id to 0
+                if (updatedItem.group_id === null) {
+                    updatedItem.group_id = 0;
+                }
+                // if the location_id is null then update the location_id to 0
+                if (updatedItem.location_id === null) {
+                    updatedItem.location_id = 0;
+                }
+                res.json(updatedItem);
+            } else {
+                res.json(item);
+            }
+        } else {
+            res.status(404).json({ message: 'Item not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting item', error: error.message });
+    }
+}
+
 
 // Get an item by ID
 exports.getItemById = async (req, res) => {
