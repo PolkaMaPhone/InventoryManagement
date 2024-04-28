@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Box, FormControl, FormLabel, Input, Button, useToast } from '@chakra-ui/react';
 
-const AddShelfForm: React.FC = () => {
+interface AddItemFormProps {
+    onSuccess: () => void;
+}
+
+const AddShelfForm: React.FC<AddItemFormProps> = ({ onSuccess }) => {
     const [description, setDescription] = useState<string>('');
     const [label, setLabel] = useState<string>('');
     const toast = useToast();
@@ -35,6 +39,7 @@ const AddShelfForm: React.FC = () => {
             // Optionally reset the form
             setDescription('');
             setLabel('');
+            onSuccess();
             
         } catch (error) {
             if (error instanceof Error) {

@@ -2,7 +2,12 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { Category } from '../types/itemTypes';
 import { FormControl, FormLabel, Input, Select, Button, useToast } from '@chakra-ui/react';
 
-const AddItemForm: React.FC = () => {
+interface AddItemFormProps {
+    onSuccess: () => void;
+}
+
+
+const AddItemForm: React.FC<AddItemFormProps> = ({ onSuccess }) => {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [category_id, setCategoryId] = useState<number | ''>('');
@@ -41,6 +46,7 @@ const AddItemForm: React.FC = () => {
                 setName('');
                 setDescription('');
                 setCategoryId('');
+                onSuccess();
             } else {
                 // Error adding item
                 console.error('Error adding item:', response.statusText);

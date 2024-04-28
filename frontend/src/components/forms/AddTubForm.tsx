@@ -2,8 +2,11 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { Box, FormControl, FormLabel, Input, Select, Button, useToast } from '@chakra-ui/react';
 import { Shelf, TubFormData } from '../types/tubTypes';
 
-const AddTubForm: React.FC = () => {
+interface AddItemFormProps {
+    onSuccess: () => void;
+}
 
+const AddTubForm: React.FC<AddItemFormProps> = ({ onSuccess }) => {
 
     const [shelves, setShelves] = useState<Shelf[]>([]);
     const [formData, setFormData] = useState<TubFormData>({ label: '', shelf_id: 0 });
@@ -50,6 +53,7 @@ const AddTubForm: React.FC = () => {
                     isClosable: true,
                 });
                 setFormData({ label: '', shelf_id: 0 }); // Reset form
+                onSuccess();
             })
             .catch(error => {
                 toast({

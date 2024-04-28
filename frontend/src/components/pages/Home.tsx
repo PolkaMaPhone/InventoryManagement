@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
 import AddItemForm from '../forms/AddItemForm';
 import AddTubForm from '../forms/AddTubForm';
@@ -13,26 +13,18 @@ const HomePage: React.FC = () => {
         onOpen();
     };
 
-    const [toastMessage] = useState<string | null>(null);
-
     const getDrawerContent = () => {
         switch (drawerContent) {
             case 'item':
-                return <AddItemForm />;
+                return <AddItemForm onSuccess={onClose} />;
             case 'tub':
-                return <AddTubForm />;
+                return <AddTubForm onSuccess={onClose}/>;
             case 'shelf':
-                return <AddShelfForm />;
+                return <AddShelfForm onSuccess={onClose}/>;
             default:
                 return <div>No content selected</div>;
         }
     };
-
-    useEffect(() => {
-        if (toastMessage) {
-            onClose();
-        }
-    }, [toastMessage, onClose]);
 
     return (
         <div>
