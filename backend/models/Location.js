@@ -17,7 +17,7 @@ const Location = sequelize.define('Location', {
     }
 }, {
     tableName: 'locations',
-    timestamps: false
+    timestamps: true
 });
 
 module.exports = Location;

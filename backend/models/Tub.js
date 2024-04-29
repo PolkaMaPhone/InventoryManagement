@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
+const Location = require('./Location');
+const Shelf = require('./Shelf');
 
 const Tub = sequelize.define('Tub', {
     tub_id: {
@@ -14,7 +16,7 @@ const Tub = sequelize.define('Tub', {
     shelf_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Shelves',
+            model: Shelf,
             key: 'shelf_id'
         },
         allowNull: false
@@ -22,7 +24,7 @@ const Tub = sequelize.define('Tub', {
     location_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Locations',
+            model: Location,
             key: 'location_id'
         }
     }

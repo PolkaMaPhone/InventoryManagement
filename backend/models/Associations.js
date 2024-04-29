@@ -1,19 +1,19 @@
-const Item = require('./Item'); 
-const Category = require('./Category'); 
-const Group = require('./Group'); 
-const Tub = require('./Tub');
-const Shelf = require('./Shelf');
+const Category = require('./Category');
+const Group = require('./Group');
 const Location = require('./Location');
+const Item = require('./Item');
+const Shelf = require('./Shelf');
+const Tub = require('./Tub');
 
 function applyAssociations(sequelize) {
     // Define associations between Category and Item
     Category.hasMany(Item, {
         foreignKey: 'category_id',
-        as: 'items' 
+        as: 'items'
     });
     Item.belongsTo(Category, {
         foreignKey: 'category_id',
-        as: 'category' 
+        as: 'category'
     });
 
     // Define associations between Group and Item
