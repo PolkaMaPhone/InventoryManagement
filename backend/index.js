@@ -42,7 +42,7 @@ app.use('/api/shelves', shelfRoutes);
 app.use('/api/locations', locationRoutes);
 
 // Basic route for testing if the server is running
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Welcome to the Inventory Management System API!');
 });
 
