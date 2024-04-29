@@ -12,14 +12,14 @@ const shelfRoutes = require('./routes/shelfRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 
 // import models and apply associations
-// const { applyAssociations } = require('./models/Associations');
+const { applyAssociations } = require('./models/Associations');
 // const Category = require('./models/Category');
 // const Group = require('./models/Group');
 // const Location = require('./models/Location');
 // const Item = require('./models/Item');
 // const Tub = require('./models/Tub');
 // const Shelf = require('./models/Shelf');
-// applyAssociations(sequelize);
+applyAssociations(sequelize);
 
 const app = express();
 const PORT = process.env.VITE_BACKEND_PORT || 3001;  // Define the default port or use environment variable

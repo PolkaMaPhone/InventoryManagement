@@ -8,7 +8,7 @@ import AddShelfForm from './components/forms/AddShelfForm';
 import { ChakraProvider } from '@chakra-ui/react';
 import customTheme from './theme';
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
     return (
         <ChakraProvider theme={customTheme}>
         <Router>
@@ -38,9 +38,9 @@ function App(): JSX.Element {
                 <Routes>
                     <Route path="/items" element={<ItemList />} />
                     <Route path="/add-category" element={<AddCategoryForm />} />
-                    <Route path="/add-item" element={<AddItemForm />} />
-                    <Route path="/add-tub" element={<AddTubForm />} />
-                    <Route path="/add-shelf" element={<AddShelfForm />} />
+                    <Route path="/add-item" element={<AddItemForm onSuccess={() => {}} />} />
+                    <Route path="/add-tub" element={<AddTubForm onSuccess={() => {}} />} />
+                    <Route path="/add-shelf" element={<AddShelfForm onSuccess={() => {}} />} />
                     <Route path="/" element={<Home />} />
                 </Routes>
             </div>
