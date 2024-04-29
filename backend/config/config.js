@@ -11,7 +11,7 @@ module.exports = {
     dialect: 'postgres',
     schema: process.env.DB_SCHEMA || 'test_seed',
     port: process.env.DB_PORT,
-    logging: console.log,
+    logging: false,
     define: {
       timestamps: true,
       schema: process.env.DB_SCHEMA || 'test_seed'
@@ -29,7 +29,7 @@ module.exports = {
     dialect: 'postgres',
     schema: process.env.DB_SCHEMA || 'test_seed',
     port: process.env.DB_PORT,
-    logging: console.log,
+    logging: console.debug,
     define: {
       timestamps: true,
       schema: process.env.DB_SCHEMA || 'test_seed'
@@ -47,7 +47,7 @@ module.exports = {
     dialect: 'postgres',
     schema: process.env.DB_SCHEMA || 'public',
     port: process.env.DB_PORT,
-    logging: console.log,
+    logging: false,
     define: {
       timestamps: true,
       schema: process.env.DB_SCHEMA || 'public'

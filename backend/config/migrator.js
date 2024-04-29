@@ -1,6 +1,6 @@
 const { Umzug, SequelizeStorage } = require('umzug');
 const sequelize = require('./sequelize');
-const Sequelize = require('sequelize'); // Import Sequelize directly from the package
+const Sequelize = require('sequelize');
 
 let umzug;
 
@@ -9,17 +9,17 @@ async function runMigrations() {
         migrations: {
             glob: 'migrations/*.js',
             resolve: ({ name, path, context }) => {
-                console.log(`Path: ${path}`);
+                console.debug(`Migrator : Migrating: ${path}`);
                 const migration = require(path || '');
                 if (typeof migration.up !== 'function') {
-                    throw new Error(`Migration ${name} is missing the up method.`);
+                    throw new Error(`Migrator : Migration ${name} is missing the up method.`);
                 }
                 return {
                     name,
                     up: async () => migration.up(context, Sequelize),
                     down: async () => {
                         if (typeof migration.down !== 'function') {
-                            throw new Error(`Migration ${name} is missing the down method.`);
+                            throw new Error(`Migrator : Migration ${name} is missing the down method.`);
                         }
                         return migration.down(context, Sequelize);
                     },
@@ -28,7 +28,7 @@ async function runMigrations() {
         },
         context: sequelize.getQueryInterface(),
         storage: new SequelizeStorage({ sequelize }),
-        logger: console,
+        //logger: console,
     });
 
     // Runs all pending migrations
