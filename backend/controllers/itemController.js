@@ -20,9 +20,7 @@ exports.getItemsWithCategory = async (req, res) => {
         const updatedItems = items.map(item => {
             const updatedItem = {
                 ...item.toJSON(),
-                category: item.category || { category_id: 0, name: "Uncategorized", description: "This item has no category defined." },
-                //group: item.group || { group_id: 0, name: "Ungrouped", description: "This item has no group defined." },
-                //location: item.location || { location_id: 0, name: "Unlocated", description: "This item has no location defined." }
+                category: item.category || { category_id: null, name: "Uncategorized", description: "This item has no category defined." },
             };
             return updatedItem;
         });
@@ -40,9 +38,7 @@ exports.getItemWithCategory = async (req, res) => {
         if (item) {
             const updatedItem = {
                 ...item.toJSON(),
-                category: item.category_id === null ? { category_id: 0, name: "Uncategorized", description: "This item has no category defined." } : item.category,
-                group_id: item.group_id === null ? 0 : item.group_id,
-                location_id: item.location_id === null ? 0 : item.location_id
+                category: item.category_id === null ? { category_id: null, name: "Uncategorized", description: "This item has no category defined." } : item.category,
             };
             res.json(updatedItem);
         } else {
