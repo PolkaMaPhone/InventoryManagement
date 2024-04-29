@@ -38,7 +38,7 @@ async function createItems(queryInterface, db_schema) {
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const db_schema = process.env.SCHEMA; // Replace 'DB_SCHEMA' with the actual environment variable name
+    const db_schema = process.env.SCHEMA;
 
     await queryInterface.bulkInsert({ tableName: 'categories', schema: db_schema }, [{
       name: 'Sample Category 1',
