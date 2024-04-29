@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Item } from '../types/itemTypes';
 import {
+  Text,
   Table,
   Thead,
   Tbody,
@@ -11,7 +12,8 @@ import {
   Button,
   Heading,
   useToast,
-  Box
+  Box,
+  Spinner
 } from '@chakra-ui/react';
 
 
@@ -19,28 +21,36 @@ import {
 const ItemList: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const toast = useToast();
+  const hasFetchedItems = useRef(false);
+
+  const fetchItems = async () => {
+    const response = await fetch('/api/items/withCategory');
+    console.log("fetchItems : Fetching Items")
+    if (!response.ok) {
+      throw new Error('Failed to fetch items');
+    }
+    const data = await response.json();
+    return data;
+  };
 
   useEffect(() => {
-    
-    const fetchItems = async () => {
-      const response = await fetch('/api/items/withCategory');
-      if (!response.ok) {
-        throw new Error('Failed to fetch items');
+    const fetchItemsPromise = fetchItems();
+    console.log('useEffect : hasFetchedItems', hasFetchedItems.current);
+
+    fetchItemsPromise.then((data) => {
+      if (hasFetchedItems.current === false) {
+        toast.promise(
+          fetchItemsPromise,
+          {
+            success: { title: 'Items fetched successfully', description: `Great job!`, isClosable: true },
+            error: { title: 'Error fetching items', description: `It broke.`, isClosable: true },
+            loading: { title: 'Fetching items', description: `Please wait...`, duration: null, isClosable: false },
+          }
+        );
       }
-      const data = await response.json();
       setItems(data);
-      console.log("rendering toast");
-      toast.promise(
-        Promise.resolve(),
-        {
-          success: { title: 'Items fetched successfully', description: 'Great job!' },
-          error: { title: 'Error fetching items', description: 'It broke.' },
-          loading: { title: 'Fetching items', description: 'Please wait...' },
-        }
-      );
-      console.log("done rendering toast");
-    };
-    fetchItems();
+      hasFetchedItems.current = true;
+    });
   }, [toast]);
 
   const deleteItem = async (item_id: number) => {
@@ -52,21 +62,17 @@ const ItemList: React.FC = () => {
         throw new Error('Failed to delete item');
       }
       setItems(items.filter(item => item.item_id !== item_id));
-      toast({
-        title: 'Item deleted successfully',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      await toast.promise(
+        Promise.resolve(),
+        {
+          success: { title: 'Item deleted successfully', description: 'success', isClosable: true },
+          error: { title: 'Error deleting item', description: 'error', isClosable: true },
+          loading: { title: 'Deleting item', description: 'info', duration: null, isClosable: false },
+        }
+      );
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: 'Error deleting item',
-          description: error.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        toast({ title: 'Error deleting item', description: error.message, status: 'error', isClosable: true });
       }
     }
   }
@@ -74,30 +80,35 @@ const ItemList: React.FC = () => {
   return (
     <Box p={5}>
       <Heading mb={4}>Items List</Heading>
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Description</Th>
-              <Th>Category</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {items.map(item => (
-              <Tr key={item.item_id}>
-                <Td>{item.name}</Td>
-                <Td>{item.description}</Td>
-                <Td>{item.category.name}</Td>
-                <Td>
-                  <Button colorScheme="red" onClick={() => deleteItem(item.item_id)}>Delete</Button>
-                </Td>
+      <Text>Loading...</Text>
+      {items.length === 0 ? (
+        <Spinner />
+      ) : (
+        <TableContainer>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Description</Th>
+                <Th>Category</Th>
+                <Th>Actions</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              {items.map(item => (
+                <Tr key={item.item_id}>
+                  <Td>{item.name}</Td>
+                  <Td>{item.description}</Td>
+                  <Td>{item.category.name}</Td>
+                  <Td>
+                    <Button colorScheme="red" onClick={() => deleteItem(item.item_id)}>Delete</Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
