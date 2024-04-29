@@ -21,8 +21,8 @@ exports.getItemsWithCategory = async (req, res) => {
             const updatedItem = {
                 ...item.toJSON(),
                 category: item.category || { category_id: 0, name: "Uncategorized", description: "This item has no category defined." },
-                group: item.group || { group_id: 0, name: "Ungrouped", description: "This item has no group defined." },
-                location: item.location || { location_id: 0, name: "Unlocated", description: "This item has no location defined." }
+                //group: item.group || { group_id: 0, name: "Ungrouped", description: "This item has no group defined." },
+                //location: item.location || { location_id: 0, name: "Unlocated", description: "This item has no location defined." }
             };
             return updatedItem;
         });
@@ -38,23 +38,13 @@ exports.getItemWithCategory = async (req, res) => {
             include: 'category'
         });
         if (item) {
-            if (item.category_id === null) {
-                const updatedItem = {
-                    ...item.toJSON(),
-                    category: { category_id: 0, name: "Uncategorized", description: "This item has no category defined." },
-                };
-                // if group_id is null then update the group_id to 0
-                if (updatedItem.group_id === null) {
-                    updatedItem.group_id = 0;
-                }
-                // if the location_id is null then update the location_id to 0
-                if (updatedItem.location_id === null) {
-                    updatedItem.location_id = 0;
-                }
-                res.json(updatedItem);
-            } else {
-                res.json(item);
-            }
+            const updatedItem = {
+                ...item.toJSON(),
+                category: item.category_id === null ? { category_id: 0, name: "Uncategorized", description: "This item has no category defined." } : item.category,
+                group_id: item.group_id === null ? 0 : item.group_id,
+                location_id: item.location_id === null ? 0 : item.location_id
+            };
+            res.json(updatedItem);
         } else {
             res.status(404).json({ message: 'Item not found' });
         }
